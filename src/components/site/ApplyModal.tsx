@@ -18,7 +18,7 @@ import { DEPARTMENTS, JOBS } from "@/lib/jobs";
 import { applicationSchema, submitApplication, validateResume } from "@/lib/applications";
 import { cn } from "@/lib/utils";
 
-type Props = { open: boolean; onOpenChange: (o: boolean) => void; initialJobId?: string };
+type Props = { open: boolean; onOpenChange: (o: boolean) => void; initialJobId?: string | undefined };
 
 const empty = { fullName: "", email: "", phone: "", position: "", portfolioUrl: "", coverNote: "" };
 
@@ -70,7 +70,7 @@ export function ApplyModal({ open, onOpenChange, initialJobId }: Props) {
       for (const issue of parsed.error.issues) next[String(issue.path[0])] ??= issue.message;
     }
     const fileErr = validateResume(file);
-    if (fileErr) next.resume = fileErr;
+    if (fileErr) next["resume"] = fileErr;
     setErrors(next);
     if (Object.keys(next).length || !file) return;
 
@@ -120,16 +120,16 @@ export function ApplyModal({ open, onOpenChange, initialJobId }: Props) {
             </DialogHeader>
 
             <div className="grid gap-4 px-6 py-6 sm:grid-cols-2 sm:px-8">
-              <Field label="Full name" error={errors.fullName} className="sm:col-span-2">
+              <Field label="Full name" error={errors["fullName"]} className="sm:col-span-2">
                 <Input value={values.fullName} onChange={(e) => set("fullName")(e.target.value)} placeholder="Juan Dela Cruz" autoComplete="name" />
               </Field>
-              <Field label="Email" error={errors.email}>
+              <Field label="Email" error={errors["email"]}>
                 <Input type="email" value={values.email} onChange={(e) => set("email")(e.target.value)} placeholder="you@email.com" autoComplete="email" />
               </Field>
-              <Field label="Phone" error={errors.phone}>
+              <Field label="Phone" error={errors["phone"]}>
                 <Input type="tel" value={values.phone} onChange={(e) => set("phone")(e.target.value)} placeholder="0917 123 4567" autoComplete="tel" />
               </Field>
-              <Field label="Position" error={errors.position} className="sm:col-span-2">
+              <Field label="Position" error={errors["position"]} className="sm:col-span-2">
                 <Select value={values.position} onValueChange={set("position")}>
                   <SelectTrigger aria-label="Position">
                     <SelectValue placeholder="Choose a role" />
@@ -152,7 +152,7 @@ export function ApplyModal({ open, onOpenChange, initialJobId }: Props) {
                   </SelectContent>
                 </Select>
               </Field>
-              <Field label="Portfolio or LinkedIn (optional)" error={errors.portfolioUrl} className="sm:col-span-2">
+              <Field label="Portfolio or LinkedIn (optional)" error={errors["portfolioUrl"]} className="sm:col-span-2">
                 <Input value={values.portfolioUrl} onChange={(e) => set("portfolioUrl")(e.target.value)} placeholder="https://linkedin.com/in/you" />
               </Field>
 
@@ -201,10 +201,10 @@ export function ApplyModal({ open, onOpenChange, initialJobId }: Props) {
                     e.target.value = "";
                   }}
                 />
-                {errors.resume && <p className="mt-1.5 text-xs text-destructive">{errors.resume}</p>}
+                {errors["resume"] && <p className="mt-1.5 text-xs text-destructive">{errors["resume"]}</p>}
               </div>
 
-              <Field label="Cover note (optional)" error={errors.coverNote} className="sm:col-span-2">
+              <Field label="Cover note (optional)" error={errors["coverNote"]} className="sm:col-span-2">
                 <Textarea rows={3} value={values.coverNote} onChange={(e) => set("coverNote")(e.target.value)} placeholder="Tell us what excites you about this role…" />
               </Field>
             </div>
@@ -233,8 +233,8 @@ function Field({
   children,
 }: {
   label: string;
-  error?: string;
-  className?: string;
+  error?: string | undefined;
+  className?: string | undefined;
   children: React.ReactNode;
 }) {
   return (
