@@ -28,3 +28,8 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+- Job openings live in `src/lib/jobs.ts` and company/contact data in `src/lib/site.ts`; pages read from these so content changes happen in one place.
+- Applications and resumes are saved only through the `submitApplicationFn` server function (admin client); the `resumes` bucket has no public upload rule, so never add a client-side upload to it.
+- HR access comes from `public.user_roles` (role `hr`/`admin`), granted automatically to company email domains by a signup trigger; RLS gates reading applications and resumes.
