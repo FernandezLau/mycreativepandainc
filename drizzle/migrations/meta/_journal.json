@@ -8,6 +8,13 @@
       "when": 1794994210334,
       "tag": "0000_careers_applications",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795417329295,
+      "tag": "0001_remove_public_resume_upload",
+      "breakpoints": true
     }
   ]
 }

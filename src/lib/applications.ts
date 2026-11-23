@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { supabase } from "@/integrations/supabase/client";
 
 export const MAX_RESUME_BYTES = 10 * 1024 * 1024;
 export const RESUME_EXTENSIONS = [".pdf", ".doc", ".docx"];
@@ -36,31 +35,21 @@ export const applicationSchema = z.object({
 
 export type ApplicationInput = z.input<typeof applicationSchema>;
 
-function safeFileName(name: string) {
-  return name.replace(/[^a-zA-Z0-9._-]+/g, "-").slice(-120);
-}
-
 export async function submitApplication(input: ApplicationInput, resume: File, department?: string) {
   const data = applicationSchema.parse(input);
   const fileError = validateResume(resume);
   if (fileError) throw new Error(fileError);
 
-  const path = `${crypto.randomUUID()}/${safeFileName(resume.name)}`;
-  const upload = await supabase.storage
-    .from("resumes")
-    .upload(path, resume, { contentType: resume.type || undefined, upsert: false });
-  if (upload.error) throw new Error("We couldn't upload your resume. Please try again.");
+  const form = new FormData();
+  form.set("fullName", data.fullName);
+  form.set("email", data.email);
+  form.set("phone", data.phone);
+  form.set("position", data.position);
+  form.set("portfolioUrl", data.portfolioUrl);
+  form.set("coverNote", data.coverNote);
+  form.set("department", department ?? "");
+  form.set("resume", resume);
 
-  const { error } = await supabase.from("job_applications").insert({
-    full_name: data.fullName,
-    email: data.email,
-    phone: data.phone,
-    position: data.position,
-    department: department ?? null,
-    portfolio_url: data.portfolioUrl || null,
-    cover_note: data.coverNote || null,
-    resume_path: path,
-    resume_name: resume.name.slice(0, 255),
-  });
-  if (error) throw new Error("We couldn't send your application. Please try again.");
+  const { submitApplicationFn } = await import("./applications.functions");
+  await submitApplicationFn({ data: form });
 }
