@@ -9,8 +9,11 @@ export function SiteFooter() {
       <div className="absolute inset-0 grid-lines opacity-60" aria-hidden />
       <div className="relative mx-auto grid max-w-7xl gap-12 px-4 py-16 sm:px-6 md:grid-cols-[1.3fr_1fr_1.2fr]">
         <div>
-          <Logo tone="light" />
-          <p className="mt-5 max-w-sm text-sm leading-relaxed text-ink-muted">
+          <Logo tone="light" size="lg" />
+          <p className="mt-4 font-mono text-[10px] tracking-widest text-mint uppercase">
+            Est. 2006 · Tarlac City
+          </p>
+          <p className="mt-3 max-w-sm text-sm leading-relaxed text-ink-muted">
             Tarlac's software powerhouse since 2006 — engineering e-governance platforms, enterprise systems and
             websites for Philippine LGUs, national agencies and private brands.
           </p>

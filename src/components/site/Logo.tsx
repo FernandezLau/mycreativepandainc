@@ -1,20 +1,47 @@
-import logo from "@/assets/panda-logo.png";
+import logo from "@/assets/logo-full.png.asset.json";
 import { cn } from "@/lib/utils";
 
-export function Logo({ tone = "dark", className }: { tone?: "dark" | "light"; className?: string }) {
+/**
+ * The brand lockup ships as a single white-background image (wordmark + panda).
+ * On light surfaces it sits directly on the bar; on dark surfaces it needs a
+ * light plate behind it, since the artwork itself has no transparent areas.
+ */
+export function Logo({
+  tone = "dark",
+  size = "md",
+  className,
+}: {
+  tone?: "dark" | "light";
+  size?: "sm" | "md" | "lg";
+  className?: string;
+}) {
+  const height = size === "lg" ? "h-14" : size === "sm" ? "h-7" : "h-10";
+  const img = (
+    <img
+      src={logo.url}
+      alt="My Creative Panda"
+      width={713}
+      height={373}
+      className={cn("w-auto", height)}
+    />
+  );
+
+  if (tone === "light") {
+    return (
+      <span
+        className={cn(
+          "inline-flex items-center justify-center rounded-2xl bg-card px-4 py-3 shadow-xl shadow-black/40 ring-1 ring-white/10",
+          className,
+        )}
+      >
+        {img}
+      </span>
+    );
+  }
+
   return (
-    <span className={cn("flex items-center gap-2.5", className)}>
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-card p-1 shadow-card">
-        <img src={logo} alt="" width={816} height={816} className="h-full w-full object-contain" />
-      </span>
-      <span className="leading-none">
-        <span className={cn("block text-[15px] font-extrabold tracking-tight", tone === "light" ? "text-ink-foreground" : "text-foreground")}>
-          My Creative Panda
-        </span>
-        <span className={cn("mt-1 block font-mono text-[10px] tracking-widest uppercase", tone === "light" ? "text-ink-muted" : "text-muted-foreground")}>
-          Est. 2006 · Tarlac
-        </span>
-      </span>
+    <span className={cn("inline-flex items-center", className)}>
+      {img}
     </span>
   );
 }
